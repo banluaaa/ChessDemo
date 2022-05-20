@@ -22,7 +22,7 @@ public abstract class ChessComponent extends JComponent {
      * <br>
      * 因此每个棋子占用的形状是一个正方形，大小是50*50
      */
-//    private static final Dimension CHESSGRID_SIZE = new Dimension(1080 / 4 * 3 / 8, 1080 / 4 * 3 / 8);
+    private static final Dimension CHESSGRID_SIZE = new Dimension(1080 / 4 * 3 / 8, 1080 / 4 * 3 / 8);
     private static final Color[] BACKGROUND_COLORS = {Color.WHITE, Color.BLACK};
     /**
      * handle click event
@@ -38,6 +38,8 @@ public abstract class ChessComponent extends JComponent {
     private ChessboardPoint chessboardPoint;
     protected final ChessColor chessColor;
     private boolean selected;
+    private boolean entered;
+    private String name;
     protected ChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor chessColor, ClickController clickController, int size) {
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         setLocation(location);
@@ -63,10 +65,14 @@ public abstract class ChessComponent extends JComponent {
     public boolean isSelected() {
         return selected;
     }
+    public boolean isEntered(){return entered;}
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
-    }
+    public void setSelected(boolean selected) {this.selected = selected;}
+    public void setEntered(boolean entered) {this.entered = entered;}
+
+    public String getName(){return name;}
+
+    public void setName(String name){this.name = name;}
 
     /**
      * @param
@@ -95,6 +101,12 @@ public abstract class ChessComponent extends JComponent {
             System.out.printf("Click [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY());
             clickController.onClick(this);
         }
+        if(e.getID() == MouseEvent.MOUSE_ENTERED){
+            clickController.Enter(this);
+        }
+        if(e.getID() == MouseEvent.MOUSE_EXITED){
+            clickController.Exited(this);
+        }
     }
 
     /**
@@ -120,6 +132,10 @@ public abstract class ChessComponent extends JComponent {
         System.out.printf("repaint chess [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY());
         Color squareColor = BACKGROUND_COLORS[(chessboardPoint.getX() + chessboardPoint.getY()) % 2];
         g.setColor(squareColor);
+        if(isEntered()){
+            Color color = Color.lightGray;
+            g.setColor(color);
+        }
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
     }
 }

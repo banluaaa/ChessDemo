@@ -15,6 +15,8 @@ public class ClickController {
     private final Chessboard chessboard;
     private ChessComponent first;
     public static boolean paw = false;
+    public ChessComponent other;
+
     public ClickController(Chessboard chessboard) {
         this.chessboard = chessboard;
     }
@@ -40,6 +42,19 @@ public class ClickController {
                 first = null;
             }
         }
+    }
+
+    public void Enter(ChessComponent chessComponent){
+        chessComponent.setEntered(true);
+        other = chessComponent;
+        other.repaint();
+    }
+
+
+    public void Exited(ChessComponent chessComponent){
+        chessComponent.setEntered(false);
+        other = chessComponent;
+        other.repaint();
     }
 
     /**
