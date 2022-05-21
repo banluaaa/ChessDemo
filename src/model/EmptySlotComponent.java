@@ -19,7 +19,9 @@ public class EmptySlotComponent extends ChessComponent {
     public boolean canMoveTo(ChessComponent[][] chessboard, ChessboardPoint destination) {
         return false;
     }
-
+    public int getP() {
+        return 0;
+    }
     @Override
     public void loadResource() throws IOException {
         //No resource!

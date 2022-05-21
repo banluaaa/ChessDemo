@@ -19,7 +19,7 @@ public class PawnChessComponent extends ChessComponent {
      */
     private static Image PAWN_WHITE;
     private static Image PAWN_BLACK;
-
+    public static int p;
     /**
      * 车棋子对象自身的图片，是上面两种中的一种
      */
@@ -64,7 +64,9 @@ public class PawnChessComponent extends ChessComponent {
         super(chessboardPoint, location, color, listener, size);
         initiatePawnImage(color);
     }
-
+    public int getP() {
+        return p;
+    }
     /**
      * 车棋子的移动规则
      *
@@ -92,6 +94,7 @@ public class PawnChessComponent extends ChessComponent {
                     }
                 }
                 if ((source.getX() == 1) && (x == 2)) {
+                    p = rounds;
                     return true;
                 } else if (x == 1) {
                     return true;
@@ -105,6 +108,7 @@ public class PawnChessComponent extends ChessComponent {
                     }
                 }
                 if ((source.getX() == 6) && (x == -2)) {
+                    p = rounds;
                     return true;
                 } else if (x == -1) {
                     return true;
@@ -116,11 +120,11 @@ public class PawnChessComponent extends ChessComponent {
             if (!(chessComponents[destination.getX()][destination.getY()] instanceof EmptySlotComponent)) {
                 return true;
             } else {
-                if ((getChessColor() == ChessColor.BLACK)&&(getChessboardPoint().getX() == 4)) {
+                if ((getChessColor() == ChessColor.BLACK)&&(getChessboardPoint().getX() == 4)&&(Math.abs(chessComponents[source.getX()][destination.getY()].getP()-rounds)<=1)) {
                     if ((chessComponents[source.getX()][destination.getY()] instanceof PawnChessComponent)&&(chessComponents[source.getX()][destination.getY()].getChessColor() == ChessColor.WHITE)) {
                         return true;
                     }
-                } else if ((getChessColor() == ChessColor.WHITE)&&(getChessboardPoint().getX() == 3)) {
+                } else if ((getChessColor() == ChessColor.WHITE)&&(getChessboardPoint().getX() == 3)&&(Math.abs(chessComponents[source.getX()][destination.getY()].getP()-rounds)<=1)) {
                     if ((chessComponents[source.getX()][destination.getY()] instanceof PawnChessComponent) && (chessComponents[source.getX()][destination.getY()].getChessColor() == ChessColor.BLACK)) {
                         return true;
                     }

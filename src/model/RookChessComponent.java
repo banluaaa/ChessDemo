@@ -59,7 +59,9 @@ public class RookChessComponent extends ChessComponent {
             e.printStackTrace();
         }
     }
-
+    public int getP() {
+        return 0;
+    }
     public RookChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size) {
         super(chessboardPoint, location, color, listener, size);
         initiateRookImage(color);
@@ -72,7 +74,6 @@ public class RookChessComponent extends ChessComponent {
      * @param destination     目标位置，如(0, 0), (0, 7)等等
      * @return 车棋子移动的合法性
      */
-
     @Override
     public boolean canMoveTo(ChessComponent[][] chessComponents, ChessboardPoint destination) {
         ChessboardPoint source = getChessboardPoint();

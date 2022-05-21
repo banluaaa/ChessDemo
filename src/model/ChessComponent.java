@@ -1,5 +1,7 @@
 package model;
 
+import view.ChessGameFrame;
+import view.Chessboard;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -7,13 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
-import java.io.Serializable;
 
 /**
  * 这个类是一个抽象类，主要表示8*8棋盘上每个格子的棋子情况，当前有两个子类继承它，分别是EmptySlotComponent(空棋子)和RookChessComponent(车)。
  */
-public abstract class ChessComponent extends JComponent implements Serializable {
-    public static double rounds = 1;
+public abstract class ChessComponent extends JComponent {
+    public static int rounds = 1;
     /**
      * CHESSGRID_SIZE: 主要用于确定每个棋子在页面中显示的大小。
      * <br>
@@ -21,8 +22,8 @@ public abstract class ChessComponent extends JComponent implements Serializable 
      * <br>
      * 因此每个棋子占用的形状是一个正方形，大小是50*50
      */
-    private static final Dimension CHESSGRID_SIZE = new Dimension(1080 / 4 * 3 / 8, 1080 / 4 * 3 / 8);
-    private static final Color[] BACKGROUND_COLORS = {new Color(247,232,170,255), new Color(150,194,78,255)};
+//    private static final Dimension CHESSGRID_SIZE = new Dimension(1080 / 4 * 3 / 8, 1080 / 4 * 3 / 8);
+    private static final Color[] BACKGROUND_COLORS = {Color.WHITE, Color.BLACK};
     /**
      * handle click event
      */
@@ -37,8 +38,6 @@ public abstract class ChessComponent extends JComponent implements Serializable 
     private ChessboardPoint chessboardPoint;
     protected final ChessColor chessColor;
     private boolean selected;
-    private boolean entered;
-    private char name;
     protected ChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor chessColor, ClickController clickController, int size) {
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         setLocation(location);
@@ -48,8 +47,6 @@ public abstract class ChessComponent extends JComponent implements Serializable 
         this.selected = false;
         this.clickController = clickController;
     }
-
-
 
     public ChessboardPoint getChessboardPoint() {
         return chessboardPoint;
@@ -62,14 +59,14 @@ public abstract class ChessComponent extends JComponent implements Serializable 
     public ChessColor getChessColor() {
         return chessColor;
     }
-
+    public abstract int getP();
     public boolean isSelected() {
         return selected;
     }
-    public boolean isEntered(){return entered;}
 
-    public void setSelected(boolean selected) {this.selected = selected;}
-    public void setEntered(boolean entered) {this.entered = entered;}
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     /**
      * @param
@@ -98,12 +95,6 @@ public abstract class ChessComponent extends JComponent implements Serializable 
             System.out.printf("Click [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY());
             clickController.onClick(this);
         }
-        if(e.getID() == MouseEvent.MOUSE_ENTERED){
-            clickController.Enter(this);
-        }
-        if(e.getID() == MouseEvent.MOUSE_EXITED){
-            clickController.Exited(this);
-        }
     }
 
     /**
@@ -129,10 +120,6 @@ public abstract class ChessComponent extends JComponent implements Serializable 
         System.out.printf("repaint chess [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY());
         Color squareColor = BACKGROUND_COLORS[(chessboardPoint.getX() + chessboardPoint.getY()) % 2];
         g.setColor(squareColor);
-        if(isEntered()){
-            Color color = Color.lightGray;
-            g.setColor(color);
-        }
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
     }
 }

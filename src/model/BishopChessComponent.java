@@ -40,7 +40,9 @@ public class BishopChessComponent extends ChessComponent {
         }
     }
 
-
+    public int getP() {
+        return 0;
+    }
     /**
      * 在构造棋子对象的时候，调用此方法以根据颜色确定rookImage的图片是哪一种
      *
