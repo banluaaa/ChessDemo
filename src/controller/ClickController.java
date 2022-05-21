@@ -19,25 +19,36 @@ public class ClickController {
         this.chessboard = chessboard;
     }
     public void onClick(ChessComponent chessComponent) {
+        ChessComponent other = chessboard.getChessComponents()[3][4];
         if (first == null) {
             if (handleFirst(chessComponent)) {
                 chessComponent.setSelected(true);
+                other.setCanMove(true);
                 first = chessComponent;
                 first.repaint();
+                other.repaint();
             }
         } else {
             if (first == chessComponent) { // 再次点击取消选取
                 chessComponent.setSelected(false);
+                other.setCanMove(false);
                 ChessComponent recordFirst = first;
+                ChessComponent recordOther = other;
                 first = null;
+                other = null;
                 recordFirst.repaint();
+                recordOther.repaint();
             } else if (handleSecond(chessComponent)) {
                 //repaint in swap chess method.
                 chessboard.swapChessComponents(first, chessComponent);
                 chessboard.swapColor();
 
                 first.setSelected(false);
+                other.setCanMove(false);
+                ChessComponent recordOther = other;
                 first = null;
+                other = null;
+                recordOther.repaint();
             }
         }
     }

@@ -38,6 +38,7 @@ public abstract class ChessComponent extends JComponent {
     private ChessboardPoint chessboardPoint;
     protected final ChessColor chessColor;
     private boolean selected;
+    private boolean canMove;
     protected ChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor chessColor, ClickController clickController, int size) {
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         setLocation(location);
@@ -63,11 +64,15 @@ public abstract class ChessComponent extends JComponent {
     public boolean isSelected() {
         return selected;
     }
-
+    public boolean isCanMove() {
+        return canMove;
+    }
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
-
+    public void setCanMove(boolean canMove) {
+        this.canMove = canMove;
+    }
     /**
      * @param
      *                <br>
@@ -120,6 +125,10 @@ public abstract class ChessComponent extends JComponent {
         System.out.printf("repaint chess [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY());
         Color squareColor = BACKGROUND_COLORS[(chessboardPoint.getX() + chessboardPoint.getY()) % 2];
         g.setColor(squareColor);
+        if(isCanMove()){
+            Color color = Color.lightGray;
+            g.setColor(color);
+        }
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
     }
 }
