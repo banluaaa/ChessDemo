@@ -130,16 +130,17 @@ public class Chessboard extends JComponent {
         record.setEnd(chess2.getChessboardPoint());
         restractList.add(record);//
         // Note that chess1 has higher priority, 'destroys' chess2 if exists.
-        if ((chess1.getChessColor() == ChessColor.BLACK) && (chess1.getChessboardPoint().getX() == 4)) {
-            if ((chess1 instanceof PawnChessComponent) && (chess2 instanceof EmptySlotComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] instanceof PawnChessComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessColor() == ChessColor.WHITE)) {
+        if ((chess1.getChessColor() == ChessColor.BLACK)&&(chess1.getChessboardPoint().getX() == 4)) {
+            if ((chess1 instanceof PawnChessComponent) && (chess2 instanceof EmptySlotComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] instanceof PawnChessComponent)&&(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] .getChessColor() == ChessColor.WHITE)) {
                 remove(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()]);
+                add(new EmptySlotComponent(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessboardPoint(), chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getLocation(), clickController, CHESS_SIZE));
             }
-        } else if ((chess1.getChessColor() == ChessColor.WHITE) && (chess1.getChessboardPoint().getX() == 3)) {
-            if ((chess1 instanceof PawnChessComponent) && (chess2 instanceof EmptySlotComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] instanceof PawnChessComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessColor() == ChessColor.BLACK)) {
+        } else if ((chess1.getChessColor() == ChessColor.WHITE)&&(chess1.getChessboardPoint().getX() == 3)) {
+            if ((chess1 instanceof PawnChessComponent) && (chess2 instanceof EmptySlotComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] instanceof PawnChessComponent)&&(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] .getChessColor() == ChessColor.BLACK)) {
                 remove(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()]);
+                add(new EmptySlotComponent(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessboardPoint(), chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getLocation(), clickController, CHESS_SIZE));
             }
         }
-
         if ((chess1.getChessColor() == ChessColor.BLACK) && (chess1.getChessboardPoint().getX() == 6) && (chess2.getChessColor() != ChessColor.BLACK) && (chess2.getChessboardPoint().getX() == 7) && (chess1 instanceof PawnChessComponent)) {
             if (!(chess2 instanceof EmptySlotComponent)) {
                 if (chess2 instanceof KingChessComponent) {

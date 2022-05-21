@@ -76,20 +76,54 @@ public class BishopChessComponent extends ChessComponent {
     @Override
     public boolean canMoveTo(ChessComponent[][] chessComponents, ChessboardPoint destination) {
         ChessboardPoint source = getChessboardPoint();
-        int x = Math.abs(source.getX()-destination.getX());
-        int y = Math.abs(source.getY()-destination.getY());
-        if (x == y) {
-            int row = source.getX();
-            for (int col = Math.min(source.getY(), destination.getY()) + 1;
-                 col < Math.max(source.getY(), destination.getY()); col++) {
-                if (!(chessComponents[row][col] instanceof EmptySlotComponent)) {
-                    return false;
-                }
-            }
-        } else { // Not .
+        int x = Math.abs(source.getX() - destination.getX());
+        int y = Math.abs(source.getY() - destination.getY());
+        if (getChessColor() == chessComponents[destination.getX()][destination.getY()].getChessColor()) {
             return false;
+        } else if (x == y) {
+            if ((x == 1)&&(y == 1)) {
+                return true;
+            } else if ((Math.max(destination.getX(), source.getX()) == destination.getX()) && (Math.max(destination.getY(), source.getY()) == destination.getY())) {
+                int row = source.getX() + 1;
+                for (int col = Math.min(source.getY(), destination.getY()) + 1; col < Math.max(source.getY(), destination.getY()); col++) {
+                    if (!(chessComponents[row][col] instanceof EmptySlotComponent)) {
+                        return false;
+                    }
+                    row++;
+                }
+                return true;
+            } else if ((Math.max(destination.getX(), source.getX()) == source.getX()) && (Math.max(destination.getY(), source.getY()) == destination.getY())) {
+                int row = source.getX() - 1;
+                for (int col = Math.min(source.getY(), destination.getY()) + 1; col < Math.max(source.getY(), destination.getY()); col++) {
+                    if (!(chessComponents[row][col] instanceof EmptySlotComponent)) {
+                        return false;
+                    }
+                    row--;
+                }
+                return true;
+            } else if ((Math.max(destination.getX(), source.getX()) == destination.getX()) && (Math.max(destination.getY(), source.getY()) == source.getY())) {
+                int row = destination.getX() - 1;
+                for (int col = Math.min(source.getY(),destination.getY()) + 1; col < Math.max(source.getY(), destination.getY()); col++) {
+                    if (!(chessComponents[row][col] instanceof EmptySlotComponent)) {
+                        return false;
+                    }
+                    row--;
+                }
+                return true;
+            } else if ((Math.max(destination.getX(), source.getX()) == source.getX()) && (Math.max(destination.getY(), source.getY()) == source.getY())) {
+                int row = destination.getX() + 1;
+                for (int col = Math.min(source.getY(),destination.getY()) + 1; col < Math.max(source.getY(),destination.getY()); col++) {
+                    if (!(chessComponents[row][col] instanceof EmptySlotComponent)) {
+                        return false;
+                    }
+                    row++;
+                }
+                return true;
+            } else {
+                return false;
+            }
         }
-        return true;
+        return false;
     }
 
     /**
