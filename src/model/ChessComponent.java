@@ -1,7 +1,5 @@
 package model;
 
-import view.ChessGameFrame;
-import view.Chessboard;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -39,7 +37,7 @@ public abstract class ChessComponent extends JComponent {
     protected final ChessColor chessColor;
     private boolean selected;
     private boolean entered;
-    private String name;
+    private char name;
     protected ChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor chessColor, ClickController clickController, int size) {
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         setLocation(location);
@@ -49,6 +47,8 @@ public abstract class ChessComponent extends JComponent {
         this.selected = false;
         this.clickController = clickController;
     }
+
+
 
     public ChessboardPoint getChessboardPoint() {
         return chessboardPoint;
@@ -69,10 +69,6 @@ public abstract class ChessComponent extends JComponent {
 
     public void setSelected(boolean selected) {this.selected = selected;}
     public void setEntered(boolean entered) {this.entered = entered;}
-
-    public String getName(){return name;}
-
-    public void setName(String name){this.name = name;}
 
     /**
      * @param
