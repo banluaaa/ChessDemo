@@ -31,7 +31,7 @@ public class Chessboard extends JComponent {
      */
     private static final int CHESSBOARD_SIZE = 8;
     public static String winner;
-    private final ChessComponent[][] chessComponents = new ChessComponent[CHESSBOARD_SIZE][CHESSBOARD_SIZE];
+    private ChessComponent[][] chessComponents = new ChessComponent[CHESSBOARD_SIZE][CHESSBOARD_SIZE];//改变了final属性
     private ChessColor currentColor = ChessColor.WHITE;
     //all chessComponents in this chessboard are shared only one model controller
     private final ClickController clickController = new ClickController(this);
@@ -107,6 +107,10 @@ public class Chessboard extends JComponent {
 
     public ChessComponent[][] getChessComponents() {
         return chessComponents;
+    }
+    public void setChessComponents(ChessComponent[][]chessComponents){
+        this.chessComponents = chessComponents;
+        repaint();
     }
 
     public ChessColor getCurrentColor() {

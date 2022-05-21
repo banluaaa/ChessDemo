@@ -8,10 +8,11 @@ import view.Chessboard;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.Serializable;
 
 import static model.ChessComponent.rounds;
 
-public class ClickController {
+public class ClickController implements Serializable {
     private final Chessboard chessboard;
     private ChessComponent first;
     public static boolean paw = false;

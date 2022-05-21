@@ -182,6 +182,7 @@ public class ChessGameFrame extends JFrame implements ActionListener{
         }
         return null;
     }
+
     /**
      * 在游戏面板中添加棋盘
      */
@@ -235,7 +236,7 @@ public class ChessGameFrame extends JFrame implements ActionListener{
                 break;
             case "Load":
                 System.out.println("Load");
-
+                load();
                 break;
             case "Save":
                 System.out.println("Save");
@@ -247,6 +248,31 @@ public class ChessGameFrame extends JFrame implements ActionListener{
                 break;
             default:
                 break;
+        }
+    }
+
+    private void load(){
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int result = chooser.showOpenDialog(null);
+        File parent = chooser.getSelectedFile();
+        FileInputStream fis = null;
+        ObjectInputStream ois = null;
+        try{
+            fis = new FileInputStream(parent);
+            ois = new ObjectInputStream(fis) ;
+            ChessComponent[][]chessComponents = (ChessComponent[][]) ois.readObject();
+            chessboard.setChessComponents(chessComponents);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(ois!=null){
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -268,13 +294,14 @@ public class ChessGameFrame extends JFrame implements ActionListener{
             ObjectOutputStream oos = null;
             try {
                 fos = new FileOutputStream(file);
-
-            } catch (FileNotFoundException e) {
+                oos = new ObjectOutputStream(fos);
+                oos.writeObject(chessboard.getChessComponents());
+            }  catch (IOException e) {
                 e.printStackTrace();
-            }finally {
-                if(fos!=null){
+            } finally {
+                if(oos!=null){
                     try {
-                        fos.close();
+                        oos.close();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

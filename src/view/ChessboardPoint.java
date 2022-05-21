@@ -1,10 +1,12 @@
 package view;
 
+import java.io.Serializable;
+
 /**
  * 这个类表示棋盘上的位置，如(0, 0), (0, 7)等等
  * 其中，左上角是(0, 0)，左下角是(7, 0)，右上角是(0, 7)，右下角是(7, 7)
  */
-public class ChessboardPoint {
+public class ChessboardPoint implements Serializable {
     private int x, y;
 
     public ChessboardPoint(int x, int y) {
