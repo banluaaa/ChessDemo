@@ -7,6 +7,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import static view.Chessboard.chessComponents;
 
 /**
  * 这个类表示国际象棋里面的车
@@ -64,12 +67,24 @@ public class KingChessComponent extends ChessComponent {
         super(chessboardPoint, location, color, listener, size);
         initiateKingImage(color);
     }
-
+    public ArrayList<ChessComponent> getCanMoves() {
+        ArrayList<ChessComponent> ss = new ArrayList<>();
+        ChessboardPoint s;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                s = new ChessboardPoint(i,j);
+                if (canMoveTo(chessComponents,s)) {
+                    ss.add(chessComponents[i][j]);
+                }
+            }
+        }
+        return ss;
+    }
     /**
      * 车棋子的移动规则
      *
-     * @param chessComponents 棋盘
-     * @param destination     目标位置，如(0, 0), (0, 7)等等
+     * @param
+     * @param
      * @return 车棋子移动的合法性
      */
     public int getP() {
@@ -94,11 +109,10 @@ public class KingChessComponent extends ChessComponent {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-//        g.drawImage(rookImage, 0, 0, getWidth() - 13, getHeight() - 20, this);
         g.drawImage(kingImage, 0, 0, getWidth() , getHeight(), this);
         g.setColor(Color.BLACK);
         if (isSelected()) { // Highlights the model if selected.
-            g.setColor(Color.RED);
+            g.setColor(Color.BLUE);
             g.drawOval(0, 0, getWidth() , getHeight());
         }
     }

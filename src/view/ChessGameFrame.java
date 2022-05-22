@@ -1,13 +1,11 @@
 package view;
 
-import controller.ClickController;
 import controller.GameController;
-import model.ChessComponent;
 
 import javax.swing.*;
-import javax.swing.text.View;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.util.Timer;
+import java.util.TimerTask;
 import static model.ChessComponent.rounds;
 
 /**
@@ -22,7 +20,10 @@ public class ChessGameFrame extends JFrame {
     public String model;
     public static Chessboard chessboard;
     public static ChessGameFrame it;
-    private static String player;
+    //private static String player;不要了？
+    public static int w = 1;
+    public static int time1 = 30;
+    public static int time2 = 30;
 
     public ChessGameFrame(int width, int height) {
         setTitle("2022 CS102A Project Demo"); //设置标题
@@ -35,6 +36,7 @@ public class ChessGameFrame extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //设置程序关闭按键，如果点击右上方的叉就游戏全部关闭了
         setLayout(null);
 
+        test1();
         getPlayer();
         addChessboard();
         addLabel();
@@ -47,6 +49,41 @@ public class ChessGameFrame extends JFrame {
             //调用AI
         }
     }
+    public void test1() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Time1();
+                Time2();
+            }
+        }, 1000, 1000);
+    }
+    public void Time1() {
+        JLabel statusLabel = new JLabel("BLACK Time :"+time1);
+        statusLabel.setLocation(80,30);
+        statusLabel.setSize(200, 60);
+        statusLabel.setFont(new Font("BLACK", Font.HANGING_BASELINE, 20));
+        add(statusLabel);
+        if (time1 == 0) {
+            time1 = 30;
+        } else {
+            time1--;
+        }
+    }
+    private void Time2() {
+        JLabel statusLabel = new JLabel("WHITE Time :"+time2);
+        statusLabel.setLocation(80, 670);
+        statusLabel.setSize(200, 60);
+        statusLabel.setFont(new Font("WHITE", Font.HANGING_BASELINE, 20));
+        add(statusLabel);
+        if (time2 == 0) {
+            time2 = 30;
+        } else {
+            time2--;
+        }
+    }
+
 
     public void getPlayer() {
         String[] options = {"Player", "Tourist player"};
@@ -60,6 +97,10 @@ public class ChessGameFrame extends JFrame {
         }
     }
 
+    public static void Waining(){
+        w++;
+        JOptionPane.showMessageDialog(null, "Warning ,your CHECK will be attack!", "提示", JOptionPane.INFORMATION_MESSAGE);
+    }
     public static String getModel() {
         String[] options = {"People", "AI"};
         int n = JOptionPane.showOptionDialog(null, "Select the model", "提示", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
@@ -72,10 +113,22 @@ public class ChessGameFrame extends JFrame {
             return null;
         }
     }
+    public static String getDraw() {
+        JOptionPane.showMessageDialog(null, "A draw in chess", "提示", JOptionPane.INFORMATION_MESSAGE);
+        String[] options = {"NewGame", "Exit"};
+        int n = JOptionPane.showOptionDialog(null, "Welcome ChessGame", "提示", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        System.out.println(options[n]);
+        if (n == 0) {
+            return "NewGame";
+        } else if (n == 1) {
+            return "Exit";
+        }
+        return null;
+    }
     public static String getWinner() {
         JOptionPane.showMessageDialog(null, "GameOver\nWinner is " + Chessboard.winner, "提示", JOptionPane.INFORMATION_MESSAGE);
         String[] options = {"NewGame", "Exit"};
-        int n = JOptionPane.showOptionDialog(null, "Welcome "+ player, "提示", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        int n = JOptionPane.showOptionDialog(null, "Welcome ChessGame", "提示", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         System.out.println(options[n]);
         if (n == 0) {
             return "NewGame";
@@ -168,16 +221,15 @@ public class ChessGameFrame extends JFrame {
 
     private void addLoadButton() {
         JButton button = new JButton("Load");
-        button.setLocation(HEIGHT, HEIGHT/ 10 + 240);
+        button.setLocation(HEIGHT, HEIGHT / 10 + 240);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
 
         button.addActionListener(e -> {
             System.out.println("Click load");
-            String path = JOptionPane.showInputDialog(this,"Input Path here");
+            String path = JOptionPane.showInputDialog(this, "Input Path here");
             gameController.loadGameFromFile(path);
         });
     }
-
 }

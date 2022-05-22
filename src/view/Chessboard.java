@@ -4,7 +4,6 @@ package view;
 import controller.GameController;
 import model.*;
 import controller.ClickController;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -29,7 +28,7 @@ public class Chessboard extends JComponent {
      */
     private static final int CHESSBOARD_SIZE = 8;
     public static String winner;
-    private final ChessComponent[][] chessComponents = new ChessComponent[CHESSBOARD_SIZE][CHESSBOARD_SIZE];
+    public static final ChessComponent[][] chessComponents = new ChessComponent[CHESSBOARD_SIZE][CHESSBOARD_SIZE];
     private ChessColor currentColor = ChessColor.BLACK;
     //all chessComponents in this chessboard are shared only one model controller
     private final ClickController clickController = new ClickController(this);
@@ -96,129 +95,152 @@ public class Chessboard extends JComponent {
     }
 
     public void swapChessComponents(ChessComponent chess1, ChessComponent chess2) {
-        // Note that chess1 has higher priority, 'destroys' chess2 if exists.
-        if ((chess1.getChessColor() == ChessColor.BLACK)&&(chess1.getChessboardPoint().getX() == 4)&&(Math.abs(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getP()-rounds)<=1)) {
-            if ((chess1 instanceof PawnChessComponent) && (chess2 instanceof EmptySlotComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] instanceof PawnChessComponent)&&(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] .getChessColor() == ChessColor.WHITE)) {
-                remove(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()]);
-                add(new EmptySlotComponent(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessboardPoint(), chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getLocation(), clickController, CHESS_SIZE));
-            }
-        } else if ((chess1.getChessColor() == ChessColor.WHITE)&&(chess1.getChessboardPoint().getX() == 3)&&(Math.abs(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getP()-rounds)<=1)) {
-            if ((chess1 instanceof PawnChessComponent) && (chess2 instanceof EmptySlotComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] instanceof PawnChessComponent)&&(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] .getChessColor() == ChessColor.BLACK)) {
-                remove(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()]);
-                add(new EmptySlotComponent(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessboardPoint(), chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getLocation(), clickController, CHESS_SIZE));
+        if(ChessGameFrame.w >= 5) {
+            if (getDraw() == "NewGame") {
+                it.newChessboard();
+                it.getPlayer();
+                if (getModel() == "AI") {
+                    getDifficulty();
+                    //调用AI
+                }
+            } else {
+                System.exit (EXIT_ON_CLOSE);
             }
         }
-        if ((chess1.getChessColor() == ChessColor.BLACK) && (chess1.getChessboardPoint().getX() == 6) && (chess2.getChessColor() != ChessColor.BLACK) && (chess2.getChessboardPoint().getX() == 7) && (chess1 instanceof PawnChessComponent)) {
-            if (!(chess2 instanceof EmptySlotComponent)) {
-                if (chess2 instanceof KingChessComponent) {
-                    if (chess2.getChessColor() == ChessColor.BLACK) {
-                        winner = "WHITE";
-                    } else {
-                        winner = "BLACK";
-                    }
-                    if (getWinner() == "NewGame") {
-                        it.newChessboard();
-                        it.getPlayer();
-                        if (getModel() == "AI") {
-                            getDifficulty();
-                            //调用AI
-                        }
-                    } else {
-                        //退出
-                    }
-                }
-                remove(chess2);
-                add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE));
-            }
+        if (check(chess1,chess2) == false) {
+            Waining();
             chess1.swapLocation(chess2);
-            int row1 = chess1.getChessboardPoint().getX(), col1 = chess1.getChessboardPoint().getY();
-            chessComponents[row1][col1] = chess1;
-            int row2 = chess2.getChessboardPoint().getX(), col2 = chess2.getChessboardPoint().getY();
-            chessComponents[row2][col2] = chess2;
-            chess1.repaint();
-            chess2.repaint();
-            String a = changePawn();
-            remove(chess1);
-            if (a == "Bishop") {
-                add(chess1 = new BishopChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
-            } else if (a == "Knight") {
-                add(chess1 = new KnightChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
-            } else if (a == "Rook") {
-                add(chess1 = new RookChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
-            } else if (a == "Queen") {
-                add(chess1 = new QueenChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
+            chess2.swapLocation(chess1);
+            if (currentColor == ChessColor.BLACK) {
+                currentColor = ChessColor.WHITE;
+            } else {
+                currentColor = ChessColor.BLACK;
             }
-            chess1.repaint();
-        } else if ((chess1.getChessColor() == ChessColor.WHITE) && (chess1.getChessboardPoint().getX() == 1) && (chess2.getChessColor() != ChessColor.WHITE) && (chess2.getChessboardPoint().getX() == 0) && (chess1 instanceof PawnChessComponent)) {
-            if (!(chess2 instanceof EmptySlotComponent)) {
-                if (chess2 instanceof KingChessComponent) {
-                    if (chess2.getChessColor() == ChessColor.BLACK) {
-                        winner = "WHITE";
-                    } else {
-                        winner = "BLACK";
-                    }
-                    if (getWinner() == "NewGame") {
-                        it.newChessboard();
-                        it.getPlayer();
-                        if (getModel() == "AI") {
-                            getDifficulty();
-                            //调用AI
-                        }
-                    } else {
-                        //退出
-                    }
-                }
-                remove(chess2);
-                add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE));
-            }
-            chess1.swapLocation(chess2);
-            int row1 = chess1.getChessboardPoint().getX(), col1 = chess1.getChessboardPoint().getY();
-            chessComponents[row1][col1] = chess1;
-            int row2 = chess2.getChessboardPoint().getX(), col2 = chess2.getChessboardPoint().getY();
-            chessComponents[row2][col2] = chess2;
-            chess1.repaint();
-            chess2.repaint();
-            String a = changePawn();
-            remove(chess1);
-            if (a == "Bishop") {
-                add(chess1 = new BishopChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
-            } else if (a == "Knight") {
-                add(chess1 = new KnightChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
-            } else if (a == "Rook") {
-                add(chess1 = new RookChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
-            } else if (a == "Queen") {
-                add(chess1 = new QueenChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
-            }
-            chess1.repaint();
+            return;
         } else {
-            if (!(chess2 instanceof EmptySlotComponent)) {
-                if (chess2 instanceof KingChessComponent) {
-                    if (chess2.getChessColor() == ChessColor.BLACK) {
-                        winner = "WHITE";
-                    } else {
-                        winner = "BLACK";
-                    }
-                    if (getWinner() == "NewGame") {
-                        it.newChessboard();
-                        it.getPlayer();
-                        if (getModel() == "AI") {
-                            getDifficulty();
-                            //调用AI
-                        }
-                    } else {
-                        //退出
-                    }
+            if ((chess1.getChessColor() == ChessColor.BLACK) && (chess1.getChessboardPoint().getX() == 4) && (Math.abs(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getP() - rounds) <= 1)) {
+                if ((chess1 instanceof PawnChessComponent) && (chess2 instanceof EmptySlotComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] instanceof PawnChessComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessColor() == ChessColor.WHITE)) {
+                    remove(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()]);
+                    add(new EmptySlotComponent(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessboardPoint(), chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getLocation(), clickController, CHESS_SIZE));
                 }
-                remove(chess2);
-                add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE));
+            } else if ((chess1.getChessColor() == ChessColor.WHITE) && (chess1.getChessboardPoint().getX() == 3) && (Math.abs(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getP() - rounds) <= 1)) {
+                if ((chess1 instanceof PawnChessComponent) && (chess2 instanceof EmptySlotComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()] instanceof PawnChessComponent) && (chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessColor() == ChessColor.BLACK)) {
+                    remove(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()]);
+                    add(new EmptySlotComponent(chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getChessboardPoint(), chessComponents[chess1.getChessboardPoint().getX()][chess2.getChessboardPoint().getY()].getLocation(), clickController, CHESS_SIZE));
+                }
             }
-            chess1.swapLocation(chess2);
-            int row1 = chess1.getChessboardPoint().getX(), col1 = chess1.getChessboardPoint().getY();
-            chessComponents[row1][col1] = chess1;
-            int row2 = chess2.getChessboardPoint().getX(), col2 = chess2.getChessboardPoint().getY();
-            chessComponents[row2][col2] = chess2;
-            chess1.repaint();
-            chess2.repaint();
+            if ((chess1.getChessColor() == ChessColor.BLACK) && (chess1.getChessboardPoint().getX() == 6) && (chess2.getChessColor() != ChessColor.BLACK) && (chess2.getChessboardPoint().getX() == 7) && (chess1 instanceof PawnChessComponent)) {
+                if (!(chess2 instanceof EmptySlotComponent)) {
+                    if (chess2 instanceof KingChessComponent) {
+                        if (chess2.getChessColor() == ChessColor.BLACK) {
+                            winner = "WHITE";
+                        } else {
+                            winner = "BLACK";
+                        }
+                        if (getWinner() == "NewGame") {
+                            it.newChessboard();
+                            it.getPlayer();
+                            if (getModel() == "AI") {
+                                getDifficulty();
+                                //调用AI
+                            }
+                        } else {
+                            System.exit (EXIT_ON_CLOSE);
+                        }
+                    }
+                    remove(chess2);
+                    add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE));
+                }
+                chess1.swapLocation(chess2);
+                int row1 = chess1.getChessboardPoint().getX(), col1 = chess1.getChessboardPoint().getY();
+                chessComponents[row1][col1] = chess1;
+                int row2 = chess2.getChessboardPoint().getX(), col2 = chess2.getChessboardPoint().getY();
+                chessComponents[row2][col2] = chess2;
+                chess1.repaint();
+                chess2.repaint();
+                String a = changePawn();
+                remove(chess1);
+                if (a == "Bishop") {
+                    add(chess1 = new BishopChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
+                } else if (a == "Knight") {
+                    add(chess1 = new KnightChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
+                } else if (a == "Rook") {
+                    add(chess1 = new RookChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
+                } else if (a == "Queen") {
+                    add(chess1 = new QueenChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
+                }
+                chess1.repaint();
+            } else if ((chess1.getChessColor() == ChessColor.WHITE) && (chess1.getChessboardPoint().getX() == 1) && (chess2.getChessColor() != ChessColor.WHITE) && (chess2.getChessboardPoint().getX() == 0) && (chess1 instanceof PawnChessComponent)) {
+                if (!(chess2 instanceof EmptySlotComponent)) {
+                    if (chess2 instanceof KingChessComponent) {
+                        if (chess2.getChessColor() == ChessColor.BLACK) {
+                            winner = "WHITE";
+                        } else {
+                            winner = "BLACK";
+                        }
+                        if (getWinner() == "NewGame") {
+                            it.newChessboard();
+                            it.getPlayer();
+                            if (getModel() == "AI") {
+                                getDifficulty();
+                                //调用AI
+                            }
+                        } else {
+                            System.exit (EXIT_ON_CLOSE);
+                        }
+                    }
+                    remove(chess2);
+                    add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE));
+                }
+                chess1.swapLocation(chess2);
+                int row1 = chess1.getChessboardPoint().getX(), col1 = chess1.getChessboardPoint().getY();
+                chessComponents[row1][col1] = chess1;
+                int row2 = chess2.getChessboardPoint().getX(), col2 = chess2.getChessboardPoint().getY();
+                chessComponents[row2][col2] = chess2;
+                chess1.repaint();
+                chess2.repaint();
+                String a = changePawn();
+                remove(chess1);
+                if (a == "Bishop") {
+                    add(chess1 = new BishopChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
+                } else if (a == "Knight") {
+                    add(chess1 = new KnightChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
+                } else if (a == "Rook") {
+                    add(chess1 = new RookChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
+                } else if (a == "Queen") {
+                    add(chess1 = new QueenChessComponent(chess1.getChessboardPoint(), chess1.getLocation(), chess1.getChessColor(), clickController, CHESS_SIZE));
+                }
+                chess1.repaint();
+            } else {
+                if (!(chess2 instanceof EmptySlotComponent)) {
+                    if (chess2 instanceof KingChessComponent) {
+                        if (chess2.getChessColor() == ChessColor.BLACK) {
+                            winner = "WHITE";
+                        } else {
+                            winner = "BLACK";
+                        }
+                        if (getWinner() == "NewGame") {
+                            it.newChessboard();
+                            it.getPlayer();
+                            if (getModel() == "AI") {
+                                getDifficulty();
+                                //调用AI
+                            }
+                        } else {
+                            System.exit (EXIT_ON_CLOSE);
+                        }
+                    }
+                    remove(chess2);
+                    add(chess2 = new EmptySlotComponent(chess2.getChessboardPoint(), chess2.getLocation(), clickController, CHESS_SIZE));
+                }
+                chess1.swapLocation(chess2);
+                int row1 = chess1.getChessboardPoint().getX(), col1 = chess1.getChessboardPoint().getY();
+                chessComponents[row1][col1] = chess1;
+                int row2 = chess2.getChessboardPoint().getX(), col2 = chess2.getChessboardPoint().getY();
+                chessComponents[row2][col2] = chess2;
+                chess1.repaint();
+                chess2.repaint();
+            }
         }
     }
 
@@ -276,5 +298,38 @@ public class Chessboard extends JComponent {
 
     public void loadGame(List<String> chessData) {
         chessData.forEach(System.out::println);
+    }
+
+    public boolean check(ChessComponent a,ChessComponent b) {
+        if (a.getChessColor() == ChessColor.BLACK) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    for (int k = 0; k < chessComponents[i][j].getCanMoves().size(); k++) {
+                        if (chessComponents[i][j] == b) {
+                            return true;
+                        }
+                        if ((chessComponents[i][j].getChessColor() == ChessColor.WHITE)&&(chessComponents[i][j].getCanMoves().get(k) instanceof KingChessComponent)&&(chessComponents[i][j].getCanMoves().get(k).getChessColor() == ChessColor.BLACK)) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        } else if (a.getChessColor() == ChessColor.WHITE) {
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 8; j++) {
+                    for (int k = 0; k < chessComponents[i][j].getCanMoves().size(); k++) {
+                        if (chessComponents[i][j] == b) {
+                            return true;
+                        }
+                        if ((chessComponents[i][j].getChessColor() == ChessColor.BLACK)&&(chessComponents[i][j].getCanMoves().get(k) instanceof KingChessComponent)&&(chessComponents[i][j].getCanMoves().get(k).getChessColor() == ChessColor.WHITE)){
+                            return false;
+                        }
+                    }
+                }
+            }
+        } else {
+            return true;
+        }
+        return true;
     }
 }

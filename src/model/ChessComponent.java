@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * 这个类是一个抽象类，主要表示8*8棋盘上每个格子的棋子情况，当前有两个子类继承它，分别是EmptySlotComponent(空棋子)和RookChessComponent(车)。
@@ -24,6 +25,7 @@ public abstract class ChessComponent extends JComponent {
      */
 //    private static final Dimension CHESSGRID_SIZE = new Dimension(1080 / 4 * 3 / 8, 1080 / 4 * 3 / 8);
     private static final Color[] BACKGROUND_COLORS = {Color.WHITE, Color.BLACK};
+    public static Color[] COLORS = {Color.green,Color.RED};
     /**
      * handle click event
      */
@@ -38,7 +40,7 @@ public abstract class ChessComponent extends JComponent {
     private ChessboardPoint chessboardPoint;
     protected final ChessColor chessColor;
     private boolean selected;
-    private boolean canMove;
+    private boolean canGoTo;
     protected ChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor chessColor, ClickController clickController, int size) {
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);
         setLocation(location);
@@ -61,17 +63,13 @@ public abstract class ChessComponent extends JComponent {
         return chessColor;
     }
     public abstract int getP();
-    public boolean isSelected() {
-        return selected;
-    }
-    public boolean isCanMove() {
-        return canMove;
-    }
+    public boolean isSelected() {return selected;}
+    public boolean isCanGoTo() {return canGoTo;}
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
-    public void setCanMove(boolean canMove) {
-        this.canMove = canMove;
+    public void setCanGoTo(boolean selected) {
+        this.canGoTo = canGoTo;
     }
     /**
      * @param
@@ -99,6 +97,7 @@ public abstract class ChessComponent extends JComponent {
         if (e.getID() == MouseEvent.MOUSE_PRESSED) {
             System.out.printf("Click [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY());
             clickController.onClick(this);
+
         }
     }
 
@@ -118,17 +117,13 @@ public abstract class ChessComponent extends JComponent {
      */
 
     public abstract void loadResource() throws IOException;
-
+    public abstract ArrayList<ChessComponent> getCanMoves();
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponents(g);
         System.out.printf("repaint chess [%d,%d]\n", chessboardPoint.getX(), chessboardPoint.getY());
         Color squareColor = BACKGROUND_COLORS[(chessboardPoint.getX() + chessboardPoint.getY()) % 2];
         g.setColor(squareColor);
-        if(isCanMove()){
-            Color color = Color.lightGray;
-            g.setColor(color);
-        }
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
     }
 }

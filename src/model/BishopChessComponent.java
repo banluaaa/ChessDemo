@@ -1,5 +1,6 @@
 package model;
 
+import view.Chessboard;
 import view.ChessboardPoint;
 import controller.ClickController;
 
@@ -7,6 +8,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+
+import static view.Chessboard.chessComponents;
 
 /**
  * 这个类表示国际象棋里面的车
@@ -65,6 +69,21 @@ public class BishopChessComponent extends ChessComponent {
     public BishopChessComponent(ChessboardPoint chessboardPoint, Point location, ChessColor color, ClickController listener, int size) {
         super(chessboardPoint, location, color, listener, size);
         initiateBishopImage(color);
+    }
+
+    @Override
+    public ArrayList<ChessComponent> getCanMoves() {
+        ArrayList<ChessComponent> ss = new ArrayList<>();
+        ChessboardPoint s;
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                s = new ChessboardPoint(i,j);
+                if (canMoveTo(chessComponents,s)) {
+                    ss.add(chessComponents[i][j]);
+                }
+            }
+        }
+        return ss;
     }
 
     /**
@@ -136,11 +155,10 @@ public class BishopChessComponent extends ChessComponent {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-//        g.drawImage(rookImage, 0, 0, getWidth() - 13, getHeight() - 20, this);
         g.drawImage(bishopImage, 0, 0, getWidth() , getHeight(), this);
         g.setColor(Color.BLACK);
         if (isSelected()) { // Highlights the model if selected.
-            g.setColor(Color.RED);
+            g.setColor(Color.BLUE);
             g.drawOval(0, 0, getWidth() , getHeight());
         }
     }
