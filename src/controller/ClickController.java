@@ -2,19 +2,27 @@ package controller;
 
 
 import model.ChessComponent;
+import model.Record;
 import view.ChessGameFrame;
 import view.Chessboard;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
-import static model.ChessComponent.*;
+import static model.ChessComponent.rounds;
 
-public class ClickController {
+public class ClickController implements Serializable {
     private final Chessboard chessboard;
     private ChessComponent first;
+    //public static boolean paw = false;
+    public ChessComponent other;
+    public ChessComponent another;
+    public ChessComponent test ;
+
     public ClickController(Chessboard chessboard) {
         this.chessboard = chessboard;
     }
@@ -40,6 +48,18 @@ public class ClickController {
         }
     }
 
+    public void Enter(ChessComponent chessComponent){
+        chessComponent.setEntered(true);
+        other = chessComponent;
+        other.repaint();
+    }
+
+
+    public void Exited(ChessComponent chessComponent){
+        chessComponent.setEntered(false);
+        other = chessComponent;
+        other.repaint();
+    }
 
     /**
      * @param chessComponent 目标选取的棋子
@@ -59,7 +79,7 @@ public class ClickController {
 
     private boolean handleSecond(ChessComponent chessComponent) {
         if (chessComponent.getChessColor() != chessboard.getCurrentColor() && first.canMoveTo(chessboard.getChessComponents(), chessComponent.getChessboardPoint())) {
-            rounds++;
+            rounds ++;
         }
         return chessComponent.getChessColor() != chessboard.getCurrentColor() &&
                 first.canMoveTo(chessboard.getChessComponents(), chessComponent.getChessboardPoint());
